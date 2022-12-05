@@ -1,4 +1,6 @@
 const inquirer = require("inquirer");
 const query = require("./query/query");
 
-query.viewRoles();
+// query.viewDepartments();
+// query.viewRoles();
+query.viewEmployees();
