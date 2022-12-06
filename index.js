@@ -34,17 +34,32 @@ const userAction = () => {
         query.viewRoles();
       }
       if (response.action === "Add Role") {
-        return;
+        query.addRole();
       }
       if (response.action === "View All Departments") {
         query.viewDepartments();
       }
       if (response.action === "Add Department") {
-        return;
+        deptPrompt();
       }
       if (response.action === "Quit") {
         query.quitDb();
       }
+    });
+};
+
+const deptPrompt = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the department?",
+        name: "dept",
+      },
+    ])
+    .then((response) => {
+      console.log(response);
+      query.addDepartment(response.dept);
     });
 };
 

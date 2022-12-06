@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const cTable = require("console.table");
+const inquirer = require("inquirer");
 const action = require("../index");
 require("dotenv").config();
 
@@ -41,12 +42,66 @@ const viewEmployees = () => {
     .then(() => action.userAction());
 };
 
+const addDepartment = (dept) => {
+  db.promise()
+    .query(
+      `INSERT INTO departments (name) VALUES (
+    "${dept}")`
+    )
+    .then(() => {
+      console.log(`Added ${dept} to the database`);
+      action.userAction();
+    });
+};
+
 const quitDb = () => {
   db.promise().end();
   return;
+};
+
+const addRole = () => {
+  const depts = [];
+  db.promise()
+    .query("SELECT name AS department FROM departments;")
+    .then(([row, fields]) => {
+      row.forEach((el) => depts.push(el.department));
+    });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the name of the role?",
+        name: "role",
+      },
+      {
+        type: "input",
+        message: "What is the salary of the role?",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "What department does the role belong to?",
+        name: "department",
+        choices: depts,
+      },
+    ])
+    .then((response) => {
+      index = depts.findIndex((element) => element === response.department) + 1;
+      db.promise()
+        .query(
+          `INSERT INTO role (title,salary,department_id) VALUES (
+      "${response.role}",${response.salary},${index});`
+        )
+        .then(() => {
+          console.log(`Added ${response.role} to the database`);
+          action.userAction();
+        });
+    });
 };
 
 exports.viewDepartments = viewDepartments;
 exports.viewRoles = viewRoles;
 exports.viewEmployees = viewEmployees;
 exports.quitDb = quitDb;
+exports.addDepartment = addDepartment;
+exports.addRole = addRole;
