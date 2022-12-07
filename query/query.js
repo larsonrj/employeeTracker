@@ -99,9 +99,68 @@ const addRole = () => {
     });
 };
 
+const addEmployee = () => {
+  const role = [];
+  const allEmp = ["None"];
+  db.promise()
+    .query("SELECT title FROM role;")
+    .then(([row, fields]) => {
+      row.forEach((el) => role.push(el.title));
+    });
+  db.promise()
+    .query("SELECT concat(first_name,' ',last_name) AS name FROM employee")
+    .then(([row, fields]) => {
+      row.forEach((el) => allEmp.push(el.name));
+    });
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "What is the employee's first name?",
+        name: "firstName",
+      },
+      {
+        type: "input",
+        message: "What is the employee's last name?",
+        name: "lastName",
+      },
+      {
+        type: "list",
+        message: "What is the employee's role?",
+        name: "role",
+        choices: role,
+      },
+      {
+        type: "list",
+        message: "Who is the employee's manager?",
+        name: "allEmp",
+        choices: allEmp,
+      },
+    ])
+    .then((response) => {
+      roleID = role.findIndex((element) => element === response.role) + 1;
+      mgrID = allEmp.findIndex((element) => element === response.allEmp);
+      if (mgrID === 0) {
+        mgrID = "null";
+      }
+      db.promise()
+        .query(
+          `INSERT INTO employee (first_name,last_name,role_id,manager_id) VALUES (
+      "${response.firstName}","${response.lastName}",${roleID},${mgrID});`
+        )
+        .then(() => {
+          console.log(
+            `Added ${response.firstName} ${response.lastName} to the database`
+          );
+          action.userAction();
+        });
+    });
+};
+
 exports.viewDepartments = viewDepartments;
 exports.viewRoles = viewRoles;
 exports.viewEmployees = viewEmployees;
 exports.quitDb = quitDb;
 exports.addDepartment = addDepartment;
 exports.addRole = addRole;
+exports.addEmployee = addEmployee;
