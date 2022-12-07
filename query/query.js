@@ -180,7 +180,6 @@ const updateRole = async () => {
     .query("SELECT concat(first_name,' ',last_name) AS name FROM employee")
     .then(([row, fields]) => {
       row.forEach((el) => allEmps.push(el.name));
-      console.log(allEmps);
     });
   inquirer
     .prompt([
