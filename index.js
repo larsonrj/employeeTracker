@@ -1,6 +1,7 @@
 const inquirer = require("inquirer");
 const query = require("./query/query");
 
+// Main inquirer prompt to start the CLI
 const userAction = () => {
   inquirer
     .prompt([
@@ -20,6 +21,7 @@ const userAction = () => {
         ],
       },
     ])
+    // For each value there is a function from query.js that will query the database and provide/update the info in the database
     .then((response) => {
       if (response.action === "View All Employees") {
         query.viewEmployees();
@@ -48,6 +50,7 @@ const userAction = () => {
     });
 };
 
+// Prompt to add a department which does not need to query the database to create inputs to the questions
 const deptPrompt = () => {
   inquirer
     .prompt([
@@ -63,5 +66,6 @@ const deptPrompt = () => {
     });
 };
 
+// Kickoff CLI and export the function back to the query so that the application allows the user to make multiple actions until they decide to quit
 userAction();
 exports.userAction = userAction;

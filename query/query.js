@@ -4,6 +4,7 @@ const inquirer = require("inquirer");
 const action = require("../index");
 require("dotenv").config();
 
+// Connection to the mysql database using .env passwords
 const db = mysql.createConnection({
   host: "localhost",
   user: process.env.db_user,
@@ -11,6 +12,7 @@ const db = mysql.createConnection({
   database: process.env.db_name,
 });
 
+// Function to view all departments
 const viewDepartments = () => {
   db.promise()
     .query("SELECT departments.id,name AS department FROM departments;")
@@ -20,6 +22,7 @@ const viewDepartments = () => {
     .then(() => action.userAction());
 };
 
+// Function to view all roles
 const viewRoles = () => {
   db.promise()
     .query(
@@ -31,6 +34,7 @@ const viewRoles = () => {
     .then(() => action.userAction());
 };
 
+// Function to view all employees and their manager
 const viewEmployees = () => {
   db.promise()
     .query(
@@ -42,6 +46,7 @@ const viewEmployees = () => {
     .then(() => action.userAction());
 };
 
+// Function to add a department
 const addDepartment = (dept) => {
   db.promise()
     .query(
@@ -54,11 +59,13 @@ const addDepartment = (dept) => {
     });
 };
 
+// Function to exit out of the command line application
 const quitDb = () => {
   db.promise().end();
   return;
 };
 
+// Function to add a role
 const addRole = () => {
   const depts = [];
   db.promise()
@@ -99,6 +106,7 @@ const addRole = () => {
     });
 };
 
+// Function to add an employee
 const addEmployee = () => {
   const role = [];
   const allEmp = ["None"];
@@ -157,6 +165,7 @@ const addEmployee = () => {
     });
 };
 
+// Function to update the role of an employee
 const updateRole = async () => {
   const allEmps = [];
   const allRoles = [];
@@ -202,6 +211,7 @@ const updateRole = async () => {
     });
 };
 
+// Export all functions to the index.js file
 exports.viewDepartments = viewDepartments;
 exports.viewRoles = viewRoles;
 exports.viewEmployees = viewEmployees;
