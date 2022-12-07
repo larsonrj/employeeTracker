@@ -28,7 +28,7 @@ const userAction = () => {
         query.addEmployee();
       }
       if (response.action === "Update Employee Role") {
-        return;
+        query.updateRole();
       }
       if (response.action === "View All Roles") {
         query.viewRoles();

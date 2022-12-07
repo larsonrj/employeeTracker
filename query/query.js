@@ -157,6 +157,51 @@ const addEmployee = () => {
     });
 };
 
+const updateRole = async () => {
+  const allEmps = [];
+  const allRoles = [];
+  await db
+    .promise()
+    .query("SELECT title FROM role;")
+    .then(([row, fields]) => {
+      row.forEach((el) => allRoles.push(el.title));
+    });
+  await db
+    .promise()
+    .query("SELECT concat(first_name,' ',last_name) AS name FROM employee")
+    .then(([row, fields]) => {
+      row.forEach((el) => allEmps.push(el.name));
+      console.log(allEmps);
+    });
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Which employee's role do you want to update?",
+        name: "allEmps",
+        choices: allEmps,
+      },
+      {
+        type: "list",
+        message: "What is the employee's new role?",
+        name: "role",
+        choices: allRoles,
+      },
+    ])
+    .then((response) => {
+      roleID = allRoles.findIndex((element) => element === response.role) + 1;
+      empID = allEmps.findIndex((element) => element === response.allEmps) + 1;
+      db.promise()
+        .query(
+          `UPDATE employee SET role_id=${roleID} WHERE employee.id = ${empID};`
+        )
+        .then(() => {
+          console.log(`Changed ${response.allEmps}'s role to ${response.role}`);
+          action.userAction();
+        });
+    });
+};
+
 exports.viewDepartments = viewDepartments;
 exports.viewRoles = viewRoles;
 exports.viewEmployees = viewEmployees;
@@ -164,3 +209,4 @@ exports.quitDb = quitDb;
 exports.addDepartment = addDepartment;
 exports.addRole = addRole;
 exports.addEmployee = addEmployee;
+exports.updateRole = updateRole;
